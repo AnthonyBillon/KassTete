@@ -11,12 +11,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("vues/vmainmenu.fxml"));
-        Parent r = FXMLLoader.load(getClass().getResource("vues/vmainmenu.fxml"));
 
-        root.lookup("");
 
         primaryStage.setTitle("Le kass tete");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 
