@@ -30,35 +30,48 @@ public class MGame extends Observable {
         this.size = size;
         cells = new int[size][size];
         symbols = symbs;
+        lines = new ArrayList<>();
         for (MSymbol m : symbols) {
-            cells[m.getPoint().x][m.getPoint().y] = m.getType();
+            cells[m.getPoint().y][m.getPoint().x] = m.getType();
         }
+
+        printGrid();
     }
 
     public boolean writeLinePart(Point p) {
-        if (cells[p.x][p.y] == 0) {
+        if(currentLine==null) return false;
+        if (cells[p.y][p.x] == 0) {
             currentLine.add(p);
-            cells[p.x][p.y] = 1;
-            notify();
-            return true;
-        } else if (p.equals(currentLine.get(0))) {
-            currentLine.add(p);
-            lines.add(currentLine);
+            cells[p.y][p.x] = 1;
+            System.out.println("ça passe");
+            printGrid();
+            setChanged();
+            notifyObservers();
+        }
+        else if(cells[p.y][p.x] == cells[currentLine.get(0).y][currentLine.get(0).x]){
+            System.out.println("connected");
+        }
+        else {
+            for(Point point : currentLine){
+                cells[point.y][point.x]=0;
+                System.out.println("remise à Z");
+                printGrid();
+            }
             currentLine = null;
-
-            return checkIfVictory();
-
-        } else {
-            currentLine = null;
+            setChanged();
+            notifyObservers();
         }
         return false;
     }
 
     public void beginLine(Point p) {
-        if (cells[p.x][p.y] >= 2) {
+        if (cells[p.y][p.x] >= 2) {
             ArrayList<Point> l = new ArrayList<>();
             currentLine = l;
             l.add(p);
+            setChanged();
+            notifyObservers();
+
         }
     }
 
@@ -71,5 +84,14 @@ public class MGame extends Observable {
         return true;
     }
 
+    private void printGrid(){
+        for(int i = 0; i<cells.length; i++){
+            for(int j=0; j<cells.length; j++){
+                System.out.print(" "+cells[i][j]);
+            }
+            System.out.println("");
+        }
+        System.out.println("");
+    }
 
 }

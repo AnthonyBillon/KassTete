@@ -27,6 +27,4 @@ public abstract class CanvasFigure {
     public Canvas getCanvas(){
         return canvas;
     }
-
-
 }

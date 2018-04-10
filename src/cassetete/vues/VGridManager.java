@@ -12,7 +12,7 @@ import javafx.scene.paint.Color;
 import java.util.Observable;
 import java.util.Observer;
 
-public class VGridManager implements Observer {
+public class VGridManager  {
     public GridPane getGridPane() {
         return gridPane;
     }
@@ -45,16 +45,18 @@ public class VGridManager implements Observer {
                     canvasHandlers[i][j]= new CanvasAssetsShapeRectangle(Color.BLACK, new Canvas(CanvasFigure.SIZE, CanvasFigure.SIZE));
                     canvasHandlers[i][j].draw();
                 }
-                gridPane.add(canvasHandlers[i][j].getCanvas(), i, j);
+                gridPane.add(canvasHandlers[i][j].getCanvas(), j, i);
             }
         }
 
+        mGame.addObserver(new Observer() {
+            @Override
+            public void update(Observable o, Object arg) {
+                game = (MGame)o;
+
+            }
+        });
+
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        if(o.equals(game)){
-
-        }
-    }
 }
