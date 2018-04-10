@@ -4,6 +4,7 @@ import cassetete.models.MGame;
 import cassetete.vues.canvasAssets.CanvasFigure;
 import cassetete.vues.canvasAssets.canvasAssetsLines.CanvasAssetsLine;
 import cassetete.vues.canvasAssets.canvasAssetsLines.LineType;
+import cassetete.vues.canvasAssets.canvasAssetsShapes.CanvasAssetsShape;
 import cassetete.vues.canvasAssets.canvasAssetsShapes.CanvasAssetsShapeCircle;
 import cassetete.vues.canvasAssets.canvasAssetsShapes.CanvasAssetsShapeRectangle;
 import javafx.scene.canvas.Canvas;
@@ -20,14 +21,14 @@ public class VGridManager {
         return gridPane;
     }
 
-    GridPane gridPane;
-    MGame game;
+    private GridPane gridPane;
+    private MGame game;
 
     public CanvasFigure[][] getCanvasHandlers() {
         return canvasHandlers;
     }
 
-    CanvasFigure[][] canvasHandlers;
+    private CanvasFigure[][] canvasHandlers;
 
 
     public VGridManager(MGame mGame) {
@@ -40,10 +41,10 @@ public class VGridManager {
                 if (mGame.getCells()[i][j] == 0 || mGame.getCells()[i][j] == 1) {
                     canvasHandlers[i][j] = new CanvasAssetsLine(Color.BLACK, new Canvas(CanvasFigure.SIZE, CanvasFigure.SIZE));
                 } else if (mGame.getCells()[i][j] == 2) {
-                    canvasHandlers[i][j] = new CanvasAssetsShapeCircle(Color.BLACK, new Canvas(CanvasFigure.SIZE, CanvasFigure.SIZE));
+                    canvasHandlers[i][j] = new CanvasAssetsShapeCircle(Color.RED, new Canvas(CanvasFigure.SIZE, CanvasFigure.SIZE));
                     canvasHandlers[i][j].draw();
                 } else if (mGame.getCells()[i][j] == 3) {
-                    canvasHandlers[i][j] = new CanvasAssetsShapeRectangle(Color.BLACK, new Canvas(CanvasFigure.SIZE, CanvasFigure.SIZE));
+                    canvasHandlers[i][j] = new CanvasAssetsShapeRectangle(Color.BLUE, new Canvas(CanvasFigure.SIZE, CanvasFigure.SIZE));
                     canvasHandlers[i][j].draw();
                 }
                 gridPane.add(canvasHandlers[i][j].getCanvas(), j, i);
@@ -54,41 +55,123 @@ public class VGridManager {
             @Override
             public void update(Observable o, Object arg) {
                 game = (MGame) o;
-                for (ArrayList<Point> line : game.getLines()) {
-                    writeLine(line);
+                for (int i = 0; i < canvasHandlers.length; i++) {
+                    for (int j = 0; j < canvasHandlers[i].length; j++) {
+                        canvasHandlers[i][j].clear();
+                        canvasHandlers[i][j].draw();
+                    }
                 }
-
+                for (ArrayList<Point> line : game.getLines()) {
+                    writeLine(line, false);
+                }
+                if (game.getCurrentLine() != null) {
+                    writeLine(game.getCurrentLine(), true);
+                }
 
             }
         });
 
+
     }
 
-    private void writeLine(ArrayList<Point> line) {
+    private void writeLine(ArrayList<Point> line, boolean isTheCurrentLine) {
         if (line.size() <= 1) return;
-        System.out.println("paasss");
         for (int i = 0; i < line.size(); i++) {
+            Point cur = line.get(i);
             if (i == 0) {
 
-            } else if (i == line.size() - 1) {
+                if (cur.x == line.get(i + 1).x + 1) {
+                    CanvasAssetsShape cv = (CanvasAssetsShape) canvasHandlers[cur.y][cur.x];
+                    cv.fromLeft();
+                } else if (cur.x == line.get(i + 1).x - 1) {
+                    CanvasAssetsShape cv = (CanvasAssetsShape) canvasHandlers[cur.y][cur.x];
+                    cv.fromRight();
+                } else if (cur.y == line.get(i + 1).y + 1) {
+                    CanvasAssetsShape cv = (CanvasAssetsShape) canvasHandlers[cur.y][cur.x];
+                    cv.fromTop();
 
+                } else if (cur.y == line.get(i + 1).y - 1) {
+                    CanvasAssetsShape cv = (CanvasAssetsShape) canvasHandlers[cur.y][cur.x];
+                    cv.fromBottom();
+
+
+                }
+
+            } else if (i == line.size() - 1) {
+                if (!isTheCurrentLine) {
+
+                    if (cur.x == line.get(i - 1).x + 1) {
+                        CanvasAssetsShape cv = (CanvasAssetsShape) canvasHandlers[cur.y][cur.x];
+                        cv.fromLeft();
+                    } else if (cur.x == line.get(i - 1).x - 1) {
+                        CanvasAssetsShape cv = (CanvasAssetsShape) canvasHandlers[cur.y][cur.x];
+                        cv.fromRight();
+                    } else if (cur.y == line.get(i - 1).y + 1) {
+                        CanvasAssetsShape cv = (CanvasAssetsShape) canvasHandlers[cur.y][cur.x];
+                        cv.fromTop();
+                    } else if (cur.y == line.get(i - 1).y - 1) {
+                        CanvasAssetsShape cv = (CanvasAssetsShape) canvasHandlers[cur.y][cur.x];
+                        cv.fromBottom();
+                    }
+                } else {
+
+                    if (cur.x == line.get(i - 1).x + 1) {
+                        CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
+                        cv.setType(LineType.LEFTMID);
+                        cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+                        cv.draw();
+                    } else if (cur.x == line.get(i - 1).x - 1) {
+                        CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
+                        cv.setType(LineType.RIGHTMID);
+                        cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+                        cv.draw();
+                    } else if (cur.y == line.get(i - 1).y + 1) {
+                        CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
+                        cv.setType(LineType.TOPMID);
+                        cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+                        cv.draw();
+                    } else if (cur.y == line.get(i - 1).x - 1) {
+                        CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
+                        cv.setType(LineType.BOTMID);
+                        cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+                        cv.draw();
+                        ;
+                    }
+
+                }
             } else {
-                if (line.get(i + 1).x == line.get(i - 1).x) {
+                Point src = line.get(i - 1);
+                Point dst = line.get(i + 1);
+                if (src.x == dst.x) {
                     CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
+                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
                     cv.setType(LineType.TOPBOT);
                     cv.draw();
-                } else if (line.get(i + 1).y == line.get(i - 1).y) {
+                } else if (src.y == dst.y) {
                     CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
+                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
                     cv.setType(LineType.LEFTRIGHT);
                     cv.draw();
-                }
-                else if(line.get(i).x == line.get(i-1).x && line.get(i).y == line.get(i+1).y || line.get(i).y == line.get(i-1).y){
-                    System.out.println("oui");
-                    //if(line.get(i).x == line.get(i+1).x){
-                        CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
-                        cv.setType(LineType.LEFTBOT);
-                        cv.draw();
-                    //}
+                } else if (cur.x == dst.x + 1 && cur.y == src.y + 1 || cur.x == src.x + 1 && cur.y == dst.y + 1) {
+                    CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
+                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+                    cv.setType(LineType.LEFTTOP);
+                    cv.draw();
+                } else if (cur.x == dst.x - 1 && cur.y == src.y - 1 || cur.x == src.x - 1 && cur.y == dst.y - 1) {
+                    CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
+                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+                    cv.setType(LineType.RIGHTBOT);
+                    cv.draw();
+                } else if (cur.x == dst.x + 1 && cur.y == src.y - 1 || cur.x == src.x + 1 && cur.y == dst.y - 1) {
+                    CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
+                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+                    cv.setType(LineType.LEFTBOT);
+                    cv.draw();
+                } else if (cur.x == dst.x - 1 && cur.y == src.y + 1 || cur.x == src.x - 1 && cur.y == dst.y + 1) {
+                    CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
+                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+                    cv.setType(LineType.RIGHTTOP);
+                    cv.draw();
                 }
 
             }

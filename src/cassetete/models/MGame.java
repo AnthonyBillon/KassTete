@@ -14,7 +14,6 @@ public class MGame extends Observable {
         return currentLine;
     }
 
-    private ArrayList<MSymbol> symbols;
     private ArrayList<ArrayList<Point>> lines;
 
     private ArrayList<Integer> alreadyConnected;
@@ -35,11 +34,13 @@ public class MGame extends Observable {
 
     private ArrayList<Point> currentLine;
 
+    private MTimer mTimer;
+
 
     public MGame(int size, ArrayList<MSymbol> symbs) {
         this.size = size;
         cells = new int[size][size];
-        symbols = symbs;
+        ArrayList<MSymbol> symbols = symbs;
         lines = new ArrayList<>();
         alreadyConnected = new ArrayList<>();
         for (MSymbol m : symbols) {
@@ -47,6 +48,8 @@ public class MGame extends Observable {
         }
 
         printGrid();
+
+        mTimer=new MTimer();
     }
 
     public boolean writeLinePart(Point p) {
@@ -59,7 +62,6 @@ public class MGame extends Observable {
         if (cells[p.y][p.x] == 0) {
             currentLine.add(p);
             cells[p.y][p.x] = 1;
-            System.out.println("ça passe");
             printGrid();
             previousPoint = p;
             setChanged();
@@ -69,11 +71,11 @@ public class MGame extends Observable {
             lines.add(currentLine);
             alreadyConnected.add(cells[currentLine.get(0).y][currentLine.get(0).x]);
             currentLine = null;
+            if(checkIfVictory())stop();
             setChanged();
             notifyObservers();
 
         } else {
-            System.out.println("RAZ");
             razLine();
             currentLine = null;
             setChanged();
@@ -81,6 +83,8 @@ public class MGame extends Observable {
         }
         return false;
     }
+
+
 
     public void beginLine(Point p) {
         if(currentLine != null) razLine();
@@ -96,6 +100,13 @@ public class MGame extends Observable {
             notifyObservers();
         }
 
+    }
+
+    public void endLine(){
+        razLine();
+        currentLine=null;
+        setChanged();
+        notifyObservers();
     }
 
     private boolean checkIfVictory() {
@@ -125,10 +136,36 @@ public class MGame extends Observable {
     }
 
     private void razLine(){
-        for (int i = 1; i<currentLine.size(); i++) {
-            cells[currentLine.get(i).y][currentLine.get(i).x] = 0;
-            printGrid();
+        if(currentLine != null) {
+            for (int i = 1; i < currentLine.size(); i++) {
+                cells[currentLine.get(i).y][currentLine.get(i).x] = 0;
+                printGrid();
+            }
         }
     }
 
+    public void back(){
+        if(lines.size()>0){
+            razLine();
+            alreadyConnected.remove(alreadyConnected.size()-1);
+            ArrayList<Point> p = lines.get(lines.size()-1);
+            for (int i = 1; i<p.size()-1; i++)cells[p.get(i).y][p.get(i).x] = 0;
+
+            lines.remove(lines.get(lines.size()-1));
+            setChanged();
+            notifyObservers();
+        }
+    }
+
+    public void start(){
+        mTimer.start();
+    }
+
+    public void stop(){
+        mTimer.stop();
+    }
+
+    public MTimer getmTimer(){
+        return mTimer;
+    }
 }

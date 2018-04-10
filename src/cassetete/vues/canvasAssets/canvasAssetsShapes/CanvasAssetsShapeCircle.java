@@ -14,6 +14,7 @@ public class CanvasAssetsShapeCircle extends CanvasAssetsShape {
 
     @Override
     public void draw() {
+        super.draw();
         gc.strokeOval(10, 10, SIZE-20, SIZE-20);
     }
 }

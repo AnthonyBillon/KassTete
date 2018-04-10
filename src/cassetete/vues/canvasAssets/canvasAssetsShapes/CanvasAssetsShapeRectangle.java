@@ -12,6 +12,7 @@ public class CanvasAssetsShapeRectangle extends CanvasAssetsShape {
 
     @Override
     public void draw() {
+        super.draw();
         gc.strokeRect(10, 10, SIZE-20, SIZE-20);
     }
 }

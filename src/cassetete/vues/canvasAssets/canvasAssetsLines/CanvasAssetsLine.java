@@ -13,6 +13,8 @@ public class CanvasAssetsLine extends CanvasFigure {
 
     @Override
     public void draw() {
+        super.draw();
+        if(type == null) return;
         switch (type){
             case LEFTRIGHT:
                 gc.strokeLine(0, SIZE/2, SIZE, SIZE/2);
@@ -49,6 +51,11 @@ public class CanvasAssetsLine extends CanvasFigure {
                 gc.strokeLine(SIZE/2, SIZE/2, SIZE/2, SIZE);
                 break;
         }
+    }
+
+    public void clear(){
+        super.clear();
+        type=null;
     }
 
     public void setType(LineType type){

@@ -30,13 +30,14 @@ public abstract class CanvasAssetsShape extends CanvasFigure {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setFill(color);
         gc.setStroke(color);
-        gc.strokeLine(SIZE/2, SIZE, SIZE/2, SIZE/2);
+        gc.strokeLine(0, SIZE/2, SIZE/2, SIZE/2);
     }
 
     public void fromRight(){
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setFill(color);
         gc.setStroke(color);
-        gc.strokeLine(SIZE/2, SIZE, SIZE/2, SIZE/2);
+        gc.strokeLine(SIZE, SIZE/2, SIZE/2, SIZE/2);
+
     }
 }

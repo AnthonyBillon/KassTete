@@ -11,8 +11,6 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("vues/vmainmenu.fxml"));
-
-
         primaryStage.setTitle("Le kass tete");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
