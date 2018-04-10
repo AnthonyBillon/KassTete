@@ -61,7 +61,6 @@ public class CGame implements Initializable {
                     public void handle(MouseEvent event) {
                         if(c==current)return;
                         mGame.writeLinePart((Point)c.getUserData());
-
                     }
                 });
             }
