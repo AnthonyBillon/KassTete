@@ -36,6 +36,8 @@ public class MGame extends Observable {
 
     private MTimer mTimer;
 
+    private boolean isWon;
+
 
     public MGame(int size, ArrayList<MSymbol> symbs) {
         this.size = size;
@@ -48,6 +50,7 @@ public class MGame extends Observable {
         }
 
         printGrid();
+        isWon = false;
 
         mTimer=new MTimer();
     }
@@ -71,7 +74,10 @@ public class MGame extends Observable {
             lines.add(currentLine);
             alreadyConnected.add(cells[currentLine.get(0).y][currentLine.get(0).x]);
             currentLine = null;
-            if(checkIfVictory())stop();
+            if(checkIfVictory()) {
+                stop();
+                isWon=true;
+            }
             setChanged();
             notifyObservers();
 
@@ -167,5 +173,9 @@ public class MGame extends Observable {
 
     public MTimer getmTimer(){
         return mTimer;
+    }
+
+    public Boolean getIsWon(){
+        return isWon;
     }
 }

@@ -118,22 +118,22 @@ public class VGridManager {
                     if (cur.x == line.get(i - 1).x + 1) {
                         CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
                         cv.setType(LineType.LEFTMID);
-                        cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+                        cv.setColor(canvasHandlers[line.get(0).y][line.get(0).x].getColor());
                         cv.draw();
                     } else if (cur.x == line.get(i - 1).x - 1) {
                         CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
                         cv.setType(LineType.RIGHTMID);
-                        cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+                        cv.setColor(canvasHandlers[line.get(0).y][line.get(0).x].getColor());
                         cv.draw();
                     } else if (cur.y == line.get(i - 1).y + 1) {
                         CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
                         cv.setType(LineType.TOPMID);
-                        cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+                        cv.setColor(canvasHandlers[line.get(0).y][line.get(0).x].getColor());
                         cv.draw();
                     } else if (cur.y == line.get(i - 1).x - 1) {
                         CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
                         cv.setType(LineType.BOTMID);
-                        cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+                        cv.setColor(canvasHandlers[line.get(0).y][line.get(0).x].getColor());
                         cv.draw();
                         ;
                     }
@@ -144,32 +144,33 @@ public class VGridManager {
                 Point dst = line.get(i + 1);
                 if (src.x == dst.x) {
                     CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
-                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+
+                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).x].getColor());
                     cv.setType(LineType.TOPBOT);
                     cv.draw();
                 } else if (src.y == dst.y) {
                     CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
-                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).x].getColor());
                     cv.setType(LineType.LEFTRIGHT);
                     cv.draw();
                 } else if (cur.x == dst.x + 1 && cur.y == src.y + 1 || cur.x == src.x + 1 && cur.y == dst.y + 1) {
                     CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
-                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).x].getColor());
                     cv.setType(LineType.LEFTTOP);
                     cv.draw();
                 } else if (cur.x == dst.x - 1 && cur.y == src.y - 1 || cur.x == src.x - 1 && cur.y == dst.y - 1) {
                     CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
-                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).x].getColor());
                     cv.setType(LineType.RIGHTBOT);
                     cv.draw();
                 } else if (cur.x == dst.x + 1 && cur.y == src.y - 1 || cur.x == src.x + 1 && cur.y == dst.y - 1) {
                     CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
-                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).x].getColor());
                     cv.setType(LineType.LEFTBOT);
                     cv.draw();
                 } else if (cur.x == dst.x - 1 && cur.y == src.y + 1 || cur.x == src.x - 1 && cur.y == dst.y + 1) {
                     CanvasAssetsLine cv = (CanvasAssetsLine) canvasHandlers[line.get(i).y][line.get(i).x];
-                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).y].getColor());
+                    cv.setColor(canvasHandlers[line.get(0).y][line.get(0).x].getColor());
                     cv.setType(LineType.RIGHTTOP);
                     cv.draw();
                 }

@@ -79,6 +79,7 @@ public class CGame implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 mGame.back();
+                System.out.println(mainPane.getScene());
             }
         });
     }
