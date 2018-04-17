@@ -7,9 +7,17 @@ import cassetete.vues.canvasAssets.canvasAssetsLines.LineType;
 import cassetete.vues.canvasAssets.canvasAssetsShapes.CanvasAssetsShape;
 import cassetete.vues.canvasAssets.canvasAssetsShapes.CanvasAssetsShapeCircle;
 import cassetete.vues.canvasAssets.canvasAssetsShapes.CanvasAssetsShapeRectangle;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -23,6 +31,7 @@ public class VGridManager {
 
     private GridPane gridPane;
     private MGame game;
+
 
     public CanvasFigure[][] getCanvasHandlers() {
         return canvasHandlers;
@@ -41,10 +50,10 @@ public class VGridManager {
                 if (mGame.getCells()[i][j] == 0 || mGame.getCells()[i][j] == 1) {
                     canvasHandlers[i][j] = new CanvasAssetsLine(Color.BLACK, new Canvas(CanvasFigure.SIZE, CanvasFigure.SIZE));
                 } else if (mGame.getCells()[i][j] == 2) {
-                    canvasHandlers[i][j] = new CanvasAssetsShapeCircle(Color.RED, new Canvas(CanvasFigure.SIZE, CanvasFigure.SIZE));
+                    canvasHandlers[i][j] = new CanvasAssetsShapeCircle(Color.BROWN, new Canvas(CanvasFigure.SIZE, CanvasFigure.SIZE));
                     canvasHandlers[i][j].draw();
                 } else if (mGame.getCells()[i][j] == 3) {
-                    canvasHandlers[i][j] = new CanvasAssetsShapeRectangle(Color.BLUE, new Canvas(CanvasFigure.SIZE, CanvasFigure.SIZE));
+                    canvasHandlers[i][j] = new CanvasAssetsShapeRectangle(Color.GOLD, new Canvas(CanvasFigure.SIZE, CanvasFigure.SIZE));
                     canvasHandlers[i][j].draw();
                 }
                 gridPane.add(canvasHandlers[i][j].getCanvas(), j, i);
@@ -67,8 +76,23 @@ public class VGridManager {
                 if (game.getCurrentLine() != null) {
                     writeLine(game.getCurrentLine(), true);
                 }
+                if(game.getIsWon()){
+                    Stage dialog = new Stage();
+                    dialog.initOwner(gridPane.getScene().getWindow());
+                    GridPane p = new GridPane();
+                    p.setAlignment(Pos.CENTER);
+                    Label l = new Label("Vous avez gagné");
+                    l.setFont(new Font("Sans", 30));
+                    p.add(l, 0 , 0);
+                    p.setPrefSize(500, 200);
+                    Scene ms = new Scene(p);
+                    dialog.setScene(ms);
+                    dialog.initModality(Modality.APPLICATION_MODAL);
+                    dialog.showAndWait();
 
+                }
             }
+
         });
 
 

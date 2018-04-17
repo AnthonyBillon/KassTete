@@ -26,7 +26,7 @@ public abstract class CanvasFigure {
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(1);
         gc.strokeRect(0,0, SIZE, SIZE);
-        gc.setLineWidth(5);
+        gc.setLineWidth(10);
         gc.setStroke(color);
     };
 

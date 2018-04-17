@@ -2,10 +2,11 @@ package cassetete.models;
 
 
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Observable;
 
-public class MGame extends Observable {
+public class MGame extends Observable implements Serializable {
     public ArrayList<ArrayList<Point>> getLines() {
         return lines;
     }
@@ -53,6 +54,8 @@ public class MGame extends Observable {
         isWon = false;
 
         mTimer=new MTimer();
+
+        save();
     }
 
     public boolean writeLinePart(Point p) {
@@ -163,6 +166,32 @@ public class MGame extends Observable {
         }
     }
 
+    public void save(){
+        ObjectOutputStream oos = null;
+        try {
+
+
+            FileOutputStream fos = new FileOutputStream("save.ser");
+            System.out.println("Saved");
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(this);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+
+        } finally {
+          if(oos != null) {
+              try {
+                  oos.flush();
+                  oos.close();
+              } catch (IOException e) {
+                  //e.printStackTrace();
+              }
+
+          }
+        }
+    }
+
     public void start(){
         mTimer.start();
     }
@@ -178,4 +207,6 @@ public class MGame extends Observable {
     public Boolean getIsWon(){
         return isWon;
     }
+
+
 }

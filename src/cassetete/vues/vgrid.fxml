@@ -12,17 +12,13 @@
            <menus>
                <Menu mnemonicParsing="false" text="Jeu">
                    <items>
-                       <MenuItem mnemonicParsing="false" text="Close" />
+                       <MenuItem id="newGame" fx:id="newGame" mnemonicParsing="false" text="Nouvelle partie" />
+                  <MenuItem id="close" fx:id="close" mnemonicParsing="false" text="Quitter" />
                    </items>
                </Menu>
                <Menu mnemonicParsing="false" text="Edition">
                    <items>
                        <MenuItem fx:id="annulerMenu" mnemonicParsing="false" text="Retour" />
-                   </items>
-               </Menu>
-               <Menu mnemonicParsing="false" text="Aide">
-                   <items>
-                       <MenuItem mnemonicParsing="false" text="About" />
                    </items>
                </Menu>
            </menus>

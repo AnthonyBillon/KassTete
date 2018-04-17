@@ -2,11 +2,12 @@ package cassetete.models;
 
 import javafx.application.Platform;
 
+import java.io.Serializable;
 import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MTimer extends Observable {
+public class MTimer extends Observable implements Serializable {
     private int sec;
     private Timer t;
     public void start(){

@@ -1,6 +1,7 @@
 package cassetete.controllers;
 
 import cassetete.models.MSymbol;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,13 +17,13 @@ import java.util.ResourceBundle;
 
 public class CMainMenu implements Initializable {
     public void close(ActionEvent actionEvent) {
-
+        //Node n = (Node)actionEvent.getSource();
+        Platform.exit();
     }
 
 
     public void play(ActionEvent actionEvent) throws IOException {
         //MGame m = new MGame(5, null);
-        System.out.println("you clicked ! ");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../vues/vgrid.fxml"));
         ArrayList<MSymbol> l = new ArrayList<>();
         l.add(new MSymbol(2, 3, 3));
@@ -30,15 +31,13 @@ public class CMainMenu implements Initializable {
         l.add(new MSymbol(3, 4, 2));
         l.add(new MSymbol(3, 0, 4));
 
-        CGame cGame = new CGame(5, l);
+        CGame cGame = new CGame(7, l);
         loader.setController(cGame);
         Parent p = loader.load();
         Stage app_stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        cGame.set();
-        app_stage.setScene(new Scene(p));
-
-
-
+        Scene s = new Scene(p);
+        cGame.set(s);
+        app_stage.setScene(s);
     }
 
     @Override
