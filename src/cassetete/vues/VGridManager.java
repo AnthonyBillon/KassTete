@@ -13,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -41,6 +42,7 @@ public class VGridManager {
 
     public VGridManager(MGame mGame) {
         gridPane = new GridPane();
+        gridPane.setStyle("-fx-background-color: #F8BBD0;");
         Random r = new Random();
         game = mGame;
 

@@ -4,6 +4,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 
 public abstract class CanvasFigure {
     public static final int SIZE = 100      ;
@@ -16,18 +18,20 @@ public abstract class CanvasFigure {
         canvas = c;
         this.color = color;
         gc = canvas.getGraphicsContext2D();
-        gc.setStroke(color);
+        gc.setStroke(Color.web("#E91E63"));
         gc.setLineWidth(1);
         gc.strokeRect(0,0, SIZE, SIZE);
         gc.setLineWidth(5);
     }
 
     public void draw(){
-        gc.setStroke(Color.BLACK);
+        gc.setStroke(Color.web("#E91E63"));
         gc.setLineWidth(1);
         gc.strokeRect(0,0, SIZE, SIZE);
         gc.setLineWidth(10);
         gc.setStroke(color);
+        gc.setLineJoin(StrokeLineJoin.ROUND);
+        gc.setLineCap(StrokeLineCap.ROUND);
     };
 
     public void clear(){

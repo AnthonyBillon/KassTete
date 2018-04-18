@@ -29,7 +29,9 @@ public class MGame extends Observable {
         return sizeX;
     }
 
-    public int getSizeY() { return sizeY; }
+    public int getSizeY() {
+        return sizeY;
+    }
 
     private int sizeX;
     private int sizeY;
@@ -60,7 +62,7 @@ public class MGame extends Observable {
 
     }
 
-    public MGame(String pathToMap) {
+    public MGame(String pathToMap) throws InvalidLevelException {
         BufferedReader bfr = null;
         FileReader fr = null;
         try {
@@ -73,6 +75,9 @@ public class MGame extends Observable {
             int type = 2;
 
             String current;
+            try {
+
+
             while ((current = bfr.readLine()) != null) {
                 if (!which) {
                     String[] tab = current.split(",");
@@ -81,17 +86,40 @@ public class MGame extends Observable {
                         sizeX = Integer.parseInt(tab[1]);
                         sizeY = Integer.parseInt(tab[0]);
                         cells = new int[sizeX][sizeY];
-                    } else return;
+                    } else throw new InvalidLevelException("Le format n'est pas respecté. Veuillez respecter le format suivant :\n" +
+                            "<taille>,<taille>\n" +
+                            "<x1>,<y1>,<x2>,<x2>\n" +
+                            "<x1>,<y1>,<x2>,<x2>\n" +
+                            "...");
                 } else {
                     String[] tab = current.split(",");
+                    if(tab.length == 4){
+
                     symbols.add(new MSymbol(type, Integer.parseInt(tab[0]), Integer.parseInt(tab[1])));
                     symbols.add(new MSymbol(type, Integer.parseInt(tab[2]), Integer.parseInt(tab[3])));
                     type++;
+                    }else throw new InvalidLevelException("Le format n'est pas respecté. Veuillez respecter le format suivant :\n" +
+                            "<taille>,<taille>\n" +
+                            "<x1>,<y1>,<x2>,<x2>\n" +
+                            "<x1>,<y1>,<x2>,<x2>\n" +
+                            "..." );
                 }
+            }        }catch (NumberFormatException e){
+                throw new InvalidLevelException("Le format n'est pas respecté. Veuillez respecter le format suivant :\n" +
+                        "<taille>,<taille>\n" +
+                        "<x1>,<y1>,<x2>,<x2>\n" +
+                        "<x1>,<y1>,<x2>,<x2>\n" +
+                        "..." );
             }
 
             for (MSymbol m : symbols) {
-                cells[m.getPoint().y][m.getPoint().x] = m.getType();
+                if (cells.length > m.getPoint().y) {
+                    if (cells[m.getPoint().y].length > m.getPoint().x) {
+                        if (cells[m.getPoint().y][m.getPoint().x] == 0) {
+                            cells[m.getPoint().y][m.getPoint().x] = m.getType();
+                        }else throw new InvalidLevelException("Le point " + m.getPoint().x + ","+m.getPoint().y + " apparait plus d'une fois (supperposition)");
+                    } else throw new InvalidLevelException("Hors du plateau à la ligne " + (m.getType() - 1));
+                } else throw new InvalidLevelException("Hors du plateau à la ligne " + (m.getType() - 1));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -122,8 +150,8 @@ public class MGame extends Observable {
 
         if (cells[p.y][p.x] == 0) {
             currentLine.add(p);
-            for(int i = 1; i<currentLine.size(); i++){
-            cells[currentLine.get(i).y][currentLine.get(i).x] = 1;
+            for (int i = 1; i < currentLine.size(); i++) {
+                cells[currentLine.get(i).y][currentLine.get(i).x] = 1;
             }
             previousPoint = p;
             setChanged();

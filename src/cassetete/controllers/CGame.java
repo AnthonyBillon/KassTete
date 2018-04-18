@@ -1,5 +1,6 @@
 package cassetete.controllers;
 
+import cassetete.models.InvalidLevelException;
 import cassetete.models.MGame;
 import cassetete.models.MSymbol;
 import cassetete.vues.VGridManager;
@@ -13,8 +14,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -55,10 +58,11 @@ public class CGame implements Initializable {
         mGame.start();
     }
 
-    CGame(String path) {
-        mGame = new MGame(path);
-        gridManager = new VGridManager(mGame);
-        mGame.start();
+    CGame(String path) throws InvalidLevelException {
+            mGame = new MGame(path);
+            gridManager = new VGridManager(mGame);
+            mGame.start();
+
     }
 
     private void setControllers() {
@@ -93,6 +97,7 @@ public class CGame implements Initializable {
                 FXMLLoader loader1 = new FXMLLoader(getClass().getResource("../vues/vmodalSelectionItem.fxml"));
 
                 Stage dialog = new Stage();
+                dialog.getIcons().add(new Image("file:assets/icons/choose.png"));
                 Parent root = null;
                 try {
                     root = loader1.load();
@@ -125,6 +130,9 @@ public class CGame implements Initializable {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                } catch (InvalidLevelException e) {
+                    CMainMenu.invalidMap(e);
+
                 }
             }
         });
