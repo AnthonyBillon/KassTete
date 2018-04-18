@@ -6,6 +6,7 @@ import cassetete.vues.canvasAssets.canvasAssetsLines.CanvasAssetsLine;
 import cassetete.vues.canvasAssets.canvasAssetsLines.LineType;
 import cassetete.vues.canvasAssets.canvasAssetsShapes.CanvasAssetsShape;
 import cassetete.vues.canvasAssets.canvasAssetsShapes.CanvasAssetsShapeCircle;
+import cassetete.vues.canvasAssets.canvasAssetsShapes.CanvasAssetsShapeGenerical;
 import cassetete.vues.canvasAssets.canvasAssetsShapes.CanvasAssetsShapeRectangle;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -20,9 +21,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 public class VGridManager {
     public GridPane getGridPane() {
@@ -42,11 +41,14 @@ public class VGridManager {
 
     public VGridManager(MGame mGame) {
         gridPane = new GridPane();
-
+        Random r = new Random();
         game = mGame;
-        canvasHandlers = new CanvasFigure[mGame.getSize()][mGame.getSize()];
+
+        HashMap<Integer, Color> colorHashMap = new HashMap<>();
+
+        canvasHandlers = new CanvasFigure[mGame.getSizeX()][mGame.getSizeY()];
         for (int i = 0; i < canvasHandlers.length; i++) {
-            for (int j = 0; j < canvasHandlers.length; j++) {
+            for (int j = 0; j < canvasHandlers[i].length; j++) {
                 if (mGame.getCells()[i][j] == 0 || mGame.getCells()[i][j] == 1) {
                     canvasHandlers[i][j] = new CanvasAssetsLine(Color.BLACK, new Canvas(CanvasFigure.SIZE, CanvasFigure.SIZE));
                 } else if (mGame.getCells()[i][j] == 2) {
@@ -55,44 +57,47 @@ public class VGridManager {
                 } else if (mGame.getCells()[i][j] == 3) {
                     canvasHandlers[i][j] = new CanvasAssetsShapeRectangle(Color.GOLD, new Canvas(CanvasFigure.SIZE, CanvasFigure.SIZE));
                     canvasHandlers[i][j].draw();
+                } else  {
+                    if(colorHashMap.get(mGame.getCells()[i][j]) == null) colorHashMap.put(
+                            mGame.getCells()[i][j],
+                            Color.rgb(r.nextInt(255), r.nextInt(255),r.nextInt(255)));
+
+                    canvasHandlers[i][j] = new CanvasAssetsShapeGenerical(colorHashMap.get(mGame.getCells()[i][j]), new Canvas(CanvasFigure.SIZE, CanvasFigure.SIZE), mGame.getCells()[i][j]);
+                    canvasHandlers[i][j].draw();
                 }
                 gridPane.add(canvasHandlers[i][j].getCanvas(), j, i);
             }
         }
 
-        mGame.addObserver(new Observer() {
-            @Override
-            public void update(Observable o, Object arg) {
-                game = (MGame) o;
-                for (int i = 0; i < canvasHandlers.length; i++) {
-                    for (int j = 0; j < canvasHandlers[i].length; j++) {
-                        canvasHandlers[i][j].clear();
-                        canvasHandlers[i][j].draw();
-                    }
-                }
-                for (ArrayList<Point> line : game.getLines()) {
-                    writeLine(line, false);
-                }
-                if (game.getCurrentLine() != null) {
-                    writeLine(game.getCurrentLine(), true);
-                }
-                if(game.getIsWon()){
-                    Stage dialog = new Stage();
-                    dialog.initOwner(gridPane.getScene().getWindow());
-                    GridPane p = new GridPane();
-                    p.setAlignment(Pos.CENTER);
-                    Label l = new Label("Vous avez gagné");
-                    l.setFont(new Font("Sans", 30));
-                    p.add(l, 0 , 0);
-                    p.setPrefSize(500, 200);
-                    Scene ms = new Scene(p);
-                    dialog.setScene(ms);
-                    dialog.initModality(Modality.APPLICATION_MODAL);
-                    dialog.showAndWait();
-
+        mGame.addObserver((o, arg) -> {
+            game = (MGame) o;
+            for (int i = 0; i < canvasHandlers.length; i++) {
+                for (int j = 0; j < canvasHandlers[i].length; j++) {
+                    canvasHandlers[i][j].clear();
+                    canvasHandlers[i][j].draw();
                 }
             }
+            for (ArrayList<Point> line : game.getLines()) {
+                writeLine(line, false);
+            }
+            if (game.getCurrentLine() != null) {
+                writeLine(game.getCurrentLine(), true);
+            }
+            if (game.getIsWon()) {
+                Stage dialog = new Stage();
+                dialog.initOwner(gridPane.getScene().getWindow());
+                GridPane p = new GridPane();
+                p.setAlignment(Pos.CENTER);
+                Label l = new Label("Vous avez gagné");
+                l.setFont(new Font("Sans", 30));
+                p.add(l, 0, 0);
+                p.setPrefSize(500, 200);
+                Scene ms = new Scene(p);
+                dialog.setScene(ms);
+                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.showAndWait();
 
+            }
         });
 
 

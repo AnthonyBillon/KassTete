@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Observable;
 
-public class MGame extends Observable implements Serializable {
+public class MGame extends Observable {
     public ArrayList<ArrayList<Point>> getLines() {
         return lines;
     }
@@ -25,11 +25,14 @@ public class MGame extends Observable implements Serializable {
 
     private int[][] cells;
 
-    public int getSize() {
-        return size;
+    public int getSizeX() {
+        return sizeX;
     }
 
-    private int size;
+    public int getSizeY() { return sizeY; }
+
+    private int sizeX;
+    private int sizeY;
 
     private Point previousPoint;
 
@@ -41,34 +44,87 @@ public class MGame extends Observable implements Serializable {
 
 
     public MGame(int size, ArrayList<MSymbol> symbs) {
-        this.size = size;
+        this.sizeX = size;
+        this.sizeY = size;
         cells = new int[size][size];
-        ArrayList<MSymbol> symbols = symbs;
         lines = new ArrayList<>();
         alreadyConnected = new ArrayList<>();
-        for (MSymbol m : symbols) {
+        for (MSymbol m : symbs) {
             cells[m.getPoint().y][m.getPoint().x] = m.getType();
         }
 
         printGrid();
         isWon = false;
 
-        mTimer=new MTimer();
+        mTimer = new MTimer();
 
-        save();
     }
 
-    public boolean writeLinePart(Point p) {
-        if (currentLine == null) return false;
-        if (!isNear(p)){
+    public MGame(String pathToMap) {
+        BufferedReader bfr = null;
+        FileReader fr = null;
+        try {
+            fr = new FileReader(pathToMap);
+            bfr = new BufferedReader(fr);
+
+            boolean which = false;
+            lines = new ArrayList<>();
+            ArrayList<MSymbol> symbols = new ArrayList<>();
+            int type = 2;
+
+            String current;
+            while ((current = bfr.readLine()) != null) {
+                if (!which) {
+                    String[] tab = current.split(",");
+                    if (tab.length == 2) {
+                        which = true;
+                        sizeX = Integer.parseInt(tab[1]);
+                        sizeY = Integer.parseInt(tab[0]);
+                        cells = new int[sizeX][sizeY];
+                    } else return;
+                } else {
+                    String[] tab = current.split(",");
+                    symbols.add(new MSymbol(type, Integer.parseInt(tab[0]), Integer.parseInt(tab[1])));
+                    symbols.add(new MSymbol(type, Integer.parseInt(tab[2]), Integer.parseInt(tab[3])));
+                    type++;
+                }
+            }
+
+            for (MSymbol m : symbols) {
+                cells[m.getPoint().y][m.getPoint().x] = m.getType();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bfr != null) bfr.close();
+                if (fr != null) fr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        lines = new ArrayList<>();
+        alreadyConnected = new ArrayList<>();
+        isWon = false;
+        mTimer = new MTimer();
+
+    }
+
+
+    public void writeLinePart(Point p) {
+        printGrid();
+        if (currentLine == null) return;
+        if (!isNear(p)) {
             razLine();
-            return false;
+            return;
         }
 
         if (cells[p.y][p.x] == 0) {
             currentLine.add(p);
-            cells[p.y][p.x] = 1;
-            printGrid();
+            for(int i = 1; i<currentLine.size(); i++){
+            cells[currentLine.get(i).y][currentLine.get(i).x] = 1;
+            }
             previousPoint = p;
             setChanged();
             notifyObservers();
@@ -77,9 +133,9 @@ public class MGame extends Observable implements Serializable {
             lines.add(currentLine);
             alreadyConnected.add(cells[currentLine.get(0).y][currentLine.get(0).x]);
             currentLine = null;
-            if(checkIfVictory()) {
+            if (checkIfVictory()) {
                 stop();
-                isWon=true;
+                isWon = true;
             }
             setChanged();
             notifyObservers();
@@ -90,13 +146,11 @@ public class MGame extends Observable implements Serializable {
             setChanged();
             notifyObservers();
         }
-        return false;
     }
 
 
-
     public void beginLine(Point p) {
-        if(currentLine != null) razLine();
+        if (currentLine != null) razLine();
         for (Integer i : alreadyConnected) {
             if (cells[p.y][p.x] == i) return;
         }
@@ -111,9 +165,9 @@ public class MGame extends Observable implements Serializable {
 
     }
 
-    public void endLine(){
+    public void endLine() {
         razLine();
-        currentLine=null;
+        currentLine = null;
         setChanged();
         notifyObservers();
     }
@@ -129,7 +183,7 @@ public class MGame extends Observable implements Serializable {
 
     private void printGrid() {
         for (int[] cell : cells) {
-            for (int j = 0; j < cells.length; j++) {
+            for (int j = 0; j < cell.length; j++) {
                 System.out.print(" " + cell[j]);
             }
             System.out.println("");
@@ -144,8 +198,8 @@ public class MGame extends Observable implements Serializable {
                 (p.x == previousPoint.x + 1 && p.y == previousPoint.y);
     }
 
-    private void razLine(){
-        if(currentLine != null) {
+    private void razLine() {
+        if (currentLine != null) {
             for (int i = 1; i < currentLine.size(); i++) {
                 cells[currentLine.get(i).y][currentLine.get(i).x] = 0;
                 printGrid();
@@ -153,58 +207,33 @@ public class MGame extends Observable implements Serializable {
         }
     }
 
-    public void back(){
-        if(lines.size()>0){
+    public void back() {
+        if (lines.size() > 0) {
             razLine();
-            alreadyConnected.remove(alreadyConnected.size()-1);
-            ArrayList<Point> p = lines.get(lines.size()-1);
-            for (int i = 1; i<p.size()-1; i++)cells[p.get(i).y][p.get(i).x] = 0;
+            alreadyConnected.remove(alreadyConnected.size() - 1);
+            ArrayList<Point> p = lines.get(lines.size() - 1);
+            for (int i = 1; i < p.size() - 1; i++) cells[p.get(i).y][p.get(i).x] = 0;
 
-            lines.remove(lines.get(lines.size()-1));
+            lines.remove(lines.get(lines.size() - 1));
             setChanged();
             notifyObservers();
         }
     }
 
-    public void save(){
-        ObjectOutputStream oos = null;
-        try {
 
-
-            FileOutputStream fos = new FileOutputStream("save.ser");
-            System.out.println("Saved");
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject(this);
-        }
-        catch (IOException e){
-            e.printStackTrace();
-
-        } finally {
-          if(oos != null) {
-              try {
-                  oos.flush();
-                  oos.close();
-              } catch (IOException e) {
-                  //e.printStackTrace();
-              }
-
-          }
-        }
-    }
-
-    public void start(){
+    public void start() {
         mTimer.start();
     }
 
-    public void stop(){
+    public void stop() {
         mTimer.stop();
     }
 
-    public MTimer getmTimer(){
+    public MTimer getmTimer() {
         return mTimer;
     }
 
-    public Boolean getIsWon(){
+    public Boolean getIsWon() {
         return isWon;
     }
 

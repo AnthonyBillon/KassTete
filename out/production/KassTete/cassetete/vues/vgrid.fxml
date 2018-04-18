@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
@@ -12,13 +13,22 @@
            <menus>
                <Menu mnemonicParsing="false" text="Jeu">
                    <items>
-                       <MenuItem id="newGame" fx:id="newGame" mnemonicParsing="false" text="Nouvelle partie" />
-                  <MenuItem id="close" fx:id="close" mnemonicParsing="false" text="Quitter" />
+                       <MenuItem id="newGame" fx:id="newGame" mnemonicParsing="false" text="Nouvelle partie">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem id="close" fx:id="close" mnemonicParsing="false" text="Quitter">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
                    </items>
                </Menu>
                <Menu mnemonicParsing="false" text="Edition">
                    <items>
-                       <MenuItem fx:id="annulerMenu" mnemonicParsing="false" text="Retour" />
+                       <MenuItem fx:id="annulerMenu" mnemonicParsing="false" text="Retour">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
                    </items>
                </Menu>
            </menus>
